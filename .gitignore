@@ -1,0 +1,51 @@
+# 環境変数・認証情報
+.env
+.env.local
+.env.*.local
+*-service-account.json
+gcp-credentials.json
+
+# 楽天 API のレスポンス (URL に Application ID が rafcid として埋め込まれる)
+# スクリプトで再取得可能なので git には含めない
+data/categories.json
+data/recipes.json
+data/sample_rakuten_response.json
+
+# Node.js / Vite / Next.js
+node_modules/
+dist/
+.next/
+out/
+.vercel/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# uv
+uv.lock
+
+# Firebase
+.firebase/
+firebase-debug.log
+.firebaserc
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!example.tfvars
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

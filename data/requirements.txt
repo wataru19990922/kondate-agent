@@ -1,0 +1,4 @@
+# data/*.py の追加依存 (fetch_*.py は標準ライブラリのみで動くが、index_to_elastic.py はライブラリ必要)
+# インストール: pip install -r data/requirements.txt
+# もしくは backend の uv env 経由: cd backend && uv run python ../data/index_to_elastic.py
+elasticsearch>=8.15.0
