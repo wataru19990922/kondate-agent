@@ -1,8 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --color-bg: #fafaf9;
+  --color-bg-card: #ffffff;
+  --color-bg-soft: #f4f4f3;
+  --color-ink: #0a0a0a;
+  --color-ink-soft: #525252;
+  --color-ink-mute: #737373;
+  --color-line: #e7e7e5;
+  --color-line-soft: #f0f0ee;
+  --color-leaf: #2f6f4d;
+  --color-leaf-soft: #e6f0ea;
+  --color-clay: #b45309;
+  --color-clay-soft: #fdf3e6;
+
+  --color-tomato: #dc2626;
+  --color-tomato-soft: #fef2f2;
+  --color-saffron: #d97706;
+  --color-saffron-soft: #fffbeb;
+  --color-sky: #0284c7;
+  --color-sky-soft: #f0f9ff;
+  --color-rose: #e11d48;
+  --color-rose-soft: #fff1f2;
+  --color-olive: #65a30d;
+  --color-olive-soft: #f7fee7;
+
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic UI', Meiryo, system-ui, sans-serif;
+}
+
+:root {
+  font-feature-settings: 'palt' 1, 'cv11' 1, 'ss01' 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
 body {
   margin: 0;
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
-  background: #f9fafb;
-  color: #111827;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+.eyebrow-caps {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-rise {
+  animation: fade-rise 180ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
