@@ -13,6 +13,7 @@ import { mockRecipes } from '../mock/recipes'
 import { useToast } from '../lib/toast'
 import { reasonFor, getReasonAccent } from '../lib/reasoning'
 import { buildProposal } from '../lib/buildProposal'
+import { useCounter } from '../lib/useCounter'
 
 type Props = {
   inventory: InventoryItem[]
@@ -70,6 +71,9 @@ export function MealsSection({
       .slice(0, 6)
       .map((f) => buildProposal(f.recipe, inventory, householdSize))
   }, [inventory, householdSize])
+
+  const inventoryCount = useCounter(inventory.length)
+  const featuredCount = useCounter(featured.length)
 
   function submitQuery(text: string) {
     const trimmed = text.trim()
@@ -204,9 +208,9 @@ export function MealsSection({
               </span>
             </div>
             <h1 className="mt-3 text-2xl font-semibold leading-tight text-balance text-[var(--color-ink)] sm:text-3xl lg:text-4xl">
-              冷蔵庫の<span className="text-[var(--color-leaf)]">{inventory.length}品</span>から、
+              冷蔵庫の<span className="tabular-nums text-[var(--color-leaf)]">{inventoryCount}品</span>から、
               <br />
-              <span className="text-[var(--color-leaf)]">{householdSize}人分</span>の献立を編成。
+              <span className="tabular-nums text-[var(--color-leaf)]">{householdSize}人分</span>の献立を編成。
             </h1>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-pretty text-[var(--color-ink-soft)]">
               今日の気分を入力すると、在庫と最近の食事の傾向を踏まえて、献立候補をピックアップします。
@@ -222,7 +226,7 @@ export function MealsSection({
                   key={n}
                   onClick={() => setHouseholdSize(n)}
                   aria-label={`${n}人分`}
-                  className={`size-6 rounded text-xs font-medium tabular-nums transition-colors duration-150 ${
+                  className={`press size-6 rounded text-xs font-medium tabular-nums transition-colors duration-150 ${
                     householdSize === n
                       ? 'bg-[var(--color-leaf)] text-white'
                       : 'text-[var(--color-ink-mute)] hover:bg-[var(--color-bg-soft)] hover:text-[var(--color-ink)]'
@@ -235,13 +239,13 @@ export function MealsSection({
           </KpiCard>
           <KpiCard label="在庫">
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-semibold tabular-nums">{inventory.length}</span>
+              <span className="text-2xl font-semibold tabular-nums">{inventoryCount}</span>
               <span className="text-xs text-[var(--color-ink-mute)]">品目</span>
             </div>
           </KpiCard>
           <KpiCard label="候補">
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-semibold tabular-nums">{featured.length}</span>
+              <span className="text-2xl font-semibold tabular-nums">{featuredCount}</span>
               <span className="text-xs text-[var(--color-ink-mute)]">通り</span>
             </div>
           </KpiCard>
@@ -249,7 +253,7 @@ export function MealsSection({
       </section>
 
       {plannedMeals.length > 0 && (
-        <section aria-labelledby="planned-heading" className="space-y-3">
+        <section aria-labelledby="planned-heading" className="animate-scale-in space-y-3">
           <div className="flex items-baseline justify-between">
             <h2
               id="planned-heading"
@@ -293,7 +297,7 @@ export function MealsSection({
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="shrink-0 rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30"
+            className="press shrink-0 rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30"
           >
             候補を見る
           </button>
@@ -360,17 +364,18 @@ export function MealsSection({
           {proposals.length === 0 ? (
             <EmptyState message="この条件で合うものが見つかりませんでした。" action={{ label: 'クリア', onClick: clearReply }} />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {proposals.map((p) => (
-                <RecipeCard
-                  key={p.recipe.recipeId}
-                  proposal={p}
-                  inventory={inventory}
-                  mealHistory={mealHistory}
-                  planned={plannedRecipeIds.has(p.recipe.recipeId)}
-                  onPlan={planProposal}
-                  onAddToShopping={addMissingToShopping}
-                />
+            <div className="stagger-children grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {proposals.map((p, i) => (
+                <div key={p.recipe.recipeId} style={{ '--i': i } as React.CSSProperties}>
+                  <RecipeCard
+                    proposal={p}
+                    inventory={inventory}
+                    mealHistory={mealHistory}
+                    planned={plannedRecipeIds.has(p.recipe.recipeId)}
+                    onPlan={planProposal}
+                    onAddToShopping={addMissingToShopping}
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -398,17 +403,18 @@ export function MealsSection({
               hint="「在庫」か「レシート」から材料を追加してください。"
             />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {featured.map((p) => (
-                <RecipeCard
-                  key={p.recipe.recipeId}
-                  proposal={p}
-                  inventory={inventory}
-                  mealHistory={mealHistory}
-                  planned={plannedRecipeIds.has(p.recipe.recipeId)}
-                  onPlan={planProposal}
-                  onAddToShopping={addMissingToShopping}
-                />
+            <div className="stagger-children grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((p, i) => (
+                <div key={p.recipe.recipeId} style={{ '--i': i } as React.CSSProperties}>
+                  <RecipeCard
+                    proposal={p}
+                    inventory={inventory}
+                    mealHistory={mealHistory}
+                    planned={plannedRecipeIds.has(p.recipe.recipeId)}
+                    onPlan={planProposal}
+                    onAddToShopping={addMissingToShopping}
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -567,7 +573,7 @@ function RecipeCard({
                 onClick={() => onPlan(proposal)}
                 disabled={!allInStock}
                 aria-describedby={!allInStock ? statusId : undefined}
-                className="rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--color-bg-soft)] disabled:text-[var(--color-ink-mute)]"
+                className="press rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--color-bg-soft)] disabled:text-[var(--color-ink-mute)]"
               >
                 今夜の予定にする
               </button>
@@ -589,7 +595,7 @@ function PlannedCard({
   onCancel: () => void
 }) {
   return (
-    <article className="flex items-center gap-3 rounded-xl border border-[var(--color-leaf)]/30 bg-[var(--color-leaf-soft)]/40 p-3 shadow-sm">
+    <article className="animate-slide-up flex items-center gap-3 rounded-xl border border-[var(--color-leaf)]/30 bg-[var(--color-leaf-soft)]/40 p-3 shadow-sm">
       <a
         href={planned.recipeUrl}
         target="_blank"
@@ -623,13 +629,13 @@ function PlannedCard({
       <div className="flex shrink-0 flex-col gap-1.5">
         <button
           onClick={onEaten}
-          className="rounded-md bg-[var(--color-leaf)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
+          className="press rounded-md bg-[var(--color-leaf)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
         >
           食べた
         </button>
         <button
           onClick={onCancel}
-          className="rounded-md px-3 py-1 text-xs text-[var(--color-ink-soft)] hover:text-[var(--color-ink)]"
+          className="rounded-md px-3 py-1 text-xs text-[var(--color-ink-soft)] transition-colors duration-150 hover:text-[var(--color-ink)]"
         >
           取り消す
         </button>
@@ -669,7 +675,7 @@ function EmptyState({
       {action && (
         <button
           onClick={action.onClick}
-          className="rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
+          className="press rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
         >
           {action.label}
         </button>

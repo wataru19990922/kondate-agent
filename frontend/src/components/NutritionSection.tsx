@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { formatMonthDay, formatWeekdayNarrow } from '../lib/format'
 import { useToast } from '../lib/toast'
+import { useCounter } from '../lib/useCounter'
 import { mockRecipes } from '../mock/recipes'
 import type { AcceptedMeal, InventoryItem, PlannedMeal, ShoppingItem } from '../types'
 
@@ -119,6 +120,8 @@ export function NutritionSection({
   const todayTotal = dailyTotals[dailyTotals.length - 1]
   const today = days[days.length - 1]
   const todayProgress = Math.min(100, (todayTotal.protein / PROTEIN_DAILY_TARGET_G) * 100)
+  const todayProteinDisplay = useCounter(todayTotal.protein)
+  const todayProgressDisplay = useCounter(Math.round(todayProgress))
 
   const sortedHistory = [...mealHistory].sort((a, b) => (a.date < b.date ? 1 : -1))
 
@@ -183,11 +186,11 @@ export function NutritionSection({
           </div>
           <div className="mt-3 flex items-baseline gap-1.5">
             <span className="text-5xl font-semibold leading-none tabular-nums text-[var(--color-leaf)]">
-              {todayTotal.protein}
+              {todayProteinDisplay}
             </span>
             <span className="text-lg font-medium text-[var(--color-leaf)]/70">g</span>
             <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-[var(--color-leaf-soft)] px-2 py-0.5 text-xs font-semibold tabular-nums text-[var(--color-leaf)]">
-              {Math.round(todayProgress)}%
+              {todayProgressDisplay}%
             </span>
           </div>
           <div
@@ -195,10 +198,10 @@ export function NutritionSection({
             aria-valuenow={todayTotal.protein}
             aria-valuemin={0}
             aria-valuemax={PROTEIN_DAILY_TARGET_G}
-            className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--color-bg-soft)]"
+            className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--color-bg-soft)]"
           >
             <div
-              className="h-full rounded-full bg-[var(--color-leaf)] transition-[width] duration-150 ease-out"
+              className="h-full rounded-full bg-[var(--color-leaf)] transition-[width] duration-700 ease-out"
               style={{ width: `${todayProgress}%` }}
             />
           </div>
@@ -234,7 +237,7 @@ export function NutritionSection({
                   </span>
                   <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--color-bg-soft)]">
                     <div
-                      className={`absolute inset-y-0 left-0 rounded-full ${
+                      className={`absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 ease-out ${
                         metTarget ? 'bg-[var(--color-leaf)]' : 'bg-[var(--color-ink-mute)]'
                       }`}
                       style={{ width: `${widthPct}%` }}
@@ -295,9 +298,13 @@ export function NutritionSection({
             {topRecipes.length > 0 && (
               <div className="mt-4">
                 <div className="eyebrow-caps mb-2">よく作ったもの</div>
-                <ul className="space-y-1.5">
+                <ul className="stagger-children space-y-1.5">
                   {topRecipes.map((r, idx) => (
-                    <li key={r.title} className="flex items-center gap-3">
+                    <li
+                      key={r.title}
+                      style={{ '--i': idx } as React.CSSProperties}
+                      className="flex items-center gap-3"
+                    >
                       <span className="w-4 text-xs font-medium tabular-nums text-[var(--color-ink-mute)]">
                         {idx + 1}
                       </span>
@@ -380,7 +387,7 @@ export function NutritionSection({
                   <button
                     onClick={() => recook(m)}
                     aria-label={`${m.recipeTitle}をもう一度作る`}
-                    className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[var(--color-line)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-soft)] transition-colors duration-150 hover:border-[var(--color-ink-mute)] hover:text-[var(--color-ink)] md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+                    className="press inline-flex shrink-0 items-center gap-1 rounded-md border border-[var(--color-line)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-soft)] transition-colors duration-150 hover:border-[var(--color-ink-mute)] hover:text-[var(--color-ink)] md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
                   >
                     <span aria-hidden="true">↻</span>
                     もう一度

@@ -4,6 +4,7 @@ import { CATEGORY_ORDER, categorizeIngredient, getCategoryMeta } from '../lib/ca
 import { formatMonthDay } from '../lib/format'
 import { useUrlState } from '../lib/useUrlState'
 import { useToast } from '../lib/toast'
+import { useCounter } from '../lib/useCounter'
 import type { IngredientCategory, InventoryItem } from '../types'
 
 type Props = {
@@ -73,6 +74,8 @@ export function InventorySection({ inventory, setInventory }: Props) {
     () => inventory.filter((i) => isUrgent(i, today)).length,
     [inventory, today]
   )
+  const inventoryCountDisplay = useCounter(inventory.length)
+  const urgentCountDisplay = useCounter(urgentCount)
 
   function removeItem(id: string) {
     const removed = inventory.find((it) => it.id === id)
@@ -144,13 +147,13 @@ export function InventorySection({ inventory, setInventory }: Props) {
           <h1 className="mt-1.5 text-2xl font-semibold text-balance text-[var(--color-ink)]">
             台所の在庫{' '}
             <span className="ml-1 rounded-full bg-[var(--color-bg-soft)] px-2 py-0.5 text-xs font-medium tabular-nums text-[var(--color-ink-soft)]">
-              {inventory.length}
+              {inventoryCountDisplay}
             </span>
           </h1>
         </div>
         <button
           onClick={() => setShowAddForm((v) => !v)}
-          className="inline-flex items-center gap-1.5 rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
+          className="press inline-flex items-center gap-1.5 rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
         >
           {showAddForm ? (
             'キャンセル'
@@ -236,7 +239,7 @@ export function InventorySection({ inventory, setInventory }: Props) {
             <button
               type="submit"
               disabled={!name.trim()}
-              className="rounded-md bg-[var(--color-ink)] px-4 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30"
+              className="press rounded-md bg-[var(--color-ink)] px-4 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30"
             >
               追加
             </button>
@@ -247,18 +250,18 @@ export function InventorySection({ inventory, setInventory }: Props) {
       {urgentCount > 0 && (
         <button
           onClick={() => setFilter(filter === 'urgent' ? 'all' : 'urgent')}
-          className="flex w-full items-center justify-between gap-3 rounded-lg border border-[var(--color-clay)]/40 bg-[var(--color-clay-soft)] px-4 py-2.5 text-left transition-colors duration-150 hover:border-[var(--color-clay)]"
+          className="press animate-slide-up flex w-full items-center justify-between gap-3 rounded-lg border border-[var(--color-clay)]/40 bg-[var(--color-clay-soft)] px-4 py-2.5 text-left transition-colors duration-150 hover:border-[var(--color-clay)]"
           aria-pressed={filter === 'urgent'}
         >
           <span className="flex items-center gap-2.5">
             <span
               aria-hidden="true"
-              className="size-1.5 rounded-full bg-[var(--color-clay)]"
+              className="animate-pulse-soft size-1.5 rounded-full bg-[var(--color-clay)]"
             />
             <span className="text-sm font-medium text-[var(--color-clay)]">
-              賞味期限が近いもの {urgentCount} 点
+              賞味期限が近いもの <span className="tabular-nums">{urgentCountDisplay}</span> 点
             </span>
-            <span className="text-xs text-[var(--color-clay)]/70">
+            <span className="hidden text-xs text-[var(--color-clay)]/70 sm:inline">
               ({EXPIRING_THRESHOLD_DAYS} 日以内に使い切りたい)
             </span>
           </span>
@@ -314,7 +317,7 @@ export function InventorySection({ inventory, setInventory }: Props) {
           </p>
           <button
             onClick={() => setShowAddForm(true)}
-            className="rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
+            className="press rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
           >
             食材を追加
           </button>
@@ -324,19 +327,20 @@ export function InventorySection({ inventory, setInventory }: Props) {
           <p className="text-sm font-medium text-[var(--color-ink)]">該当する食材がありません</p>
           <button
             onClick={() => setFilter('all')}
-            className="rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
+            className="press rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
           >
             フィルターを解除
           </button>
         </div>
       ) : (
-        <div className="space-y-5">
-          {visibleCategories.map((c) => {
+        <div className="stagger-children space-y-5">
+          {visibleCategories.map((c, i) => {
             const items = itemsForCategory(c)
             const meta = getCategoryMeta(c)
             return (
               <section
                 key={c}
+                style={{ '--i': i } as React.CSSProperties}
                 className="overflow-hidden rounded-xl border border-[var(--color-line)] bg-[var(--color-bg-card)] shadow-sm"
               >
                 <div

@@ -37,7 +37,7 @@ function App() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2.5">
             <div className="flex size-7 items-center justify-center rounded-md bg-[var(--color-ink)]">
-              <div className="size-1.5 rounded-full bg-[var(--color-leaf)]" />
+              <div className="size-1.5 animate-breathe rounded-full bg-[var(--color-leaf)]" />
             </div>
             <div className="text-base font-semibold text-[var(--color-ink)]">kondate</div>
             <span className="rounded border border-[var(--color-line)] px-1.5 py-0.5 text-xs font-medium text-[var(--color-ink-soft)]">
@@ -52,7 +52,7 @@ function App() {
                   key={t.key}
                   onClick={() => setTab(t.key)}
                   aria-current={active ? 'page' : undefined}
-                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-150 ${
+                  className={`press rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-150 ${
                     active
                       ? 'bg-[var(--color-ink)] text-white'
                       : 'text-[var(--color-ink-soft)] hover:bg-[var(--color-bg-soft)] hover:text-[var(--color-ink)]'
@@ -66,7 +66,7 @@ function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 pb-24 pt-6 sm:px-6 sm:py-8 md:pb-8">
+      <main key={tab} className="mx-auto max-w-6xl animate-fade-up px-4 pb-24 pt-6 sm:px-6 sm:py-8 md:pb-8">
         {tab === 'meals' && (
           <MealsSection
             inventory={inventory}
@@ -119,7 +119,7 @@ function App() {
                 key={t.key}
                 onClick={() => setTab(t.key)}
                 aria-current={active ? 'page' : undefined}
-                className={`flex flex-col items-center justify-center gap-1 py-2.5 text-xs font-medium transition-colors duration-150 ${
+                className={`press flex flex-col items-center justify-center gap-1 py-2.5 text-xs font-medium transition-colors duration-150 ${
                   active
                     ? 'text-[var(--color-ink)]'
                     : 'text-[var(--color-ink-mute)]'
@@ -127,8 +127,8 @@ function App() {
               >
                 <span
                   aria-hidden="true"
-                  className={`size-1 rounded-full ${
-                    active ? 'bg-[var(--color-leaf)]' : 'bg-transparent'
+                  className={`size-1 rounded-full transition-all duration-200 ${
+                    active ? 'scale-100 bg-[var(--color-leaf)]' : 'scale-0 bg-transparent'
                   }`}
                 />
                 {t.label}

@@ -124,7 +124,7 @@ export function ShoppingSection({
           <div className="flex items-center gap-2">
             <button
               onClick={moveCheckedToInventory}
-              className="rounded-md bg-[var(--color-leaf)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
+              className="press rounded-md bg-[var(--color-leaf)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
             >
               在庫に移す ({checked.length})
             </button>
@@ -154,7 +154,7 @@ export function ShoppingSection({
         <button
           type="submit"
           disabled={!input.trim()}
-          className="rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30"
+          className="press rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30"
         >
           追加
         </button>
@@ -182,15 +182,16 @@ export function ShoppingSection({
                   {unchecked.length} 点
                 </span>
               </div>
-              <ul>
+              <ul className="stagger-children">
                 {unchecked.map((item, idx) => (
-                  <Row
-                    key={item.id}
-                    item={item}
-                    onToggle={() => toggle(item.id)}
-                    onRemove={() => remove(item.id)}
-                    border={idx > 0}
-                  />
+                  <div key={item.id} style={{ '--i': idx } as React.CSSProperties}>
+                    <Row
+                      item={item}
+                      onToggle={() => toggle(item.id)}
+                      onRemove={() => remove(item.id)}
+                      border={idx > 0}
+                    />
+                  </div>
                 ))}
               </ul>
             </section>
@@ -212,15 +213,16 @@ export function ShoppingSection({
                   {checked.length} 点
                 </span>
               </div>
-              <ul>
+              <ul className="stagger-children">
                 {checked.map((item, idx) => (
-                  <Row
-                    key={item.id}
-                    item={item}
-                    onToggle={() => toggle(item.id)}
-                    onRemove={() => remove(item.id)}
-                    border={idx > 0}
-                  />
+                  <div key={item.id} style={{ '--i': idx } as React.CSSProperties}>
+                    <Row
+                      item={item}
+                      onToggle={() => toggle(item.id)}
+                      onRemove={() => remove(item.id)}
+                      border={idx > 0}
+                    />
+                  </div>
                 ))}
               </ul>
             </section>

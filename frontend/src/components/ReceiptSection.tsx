@@ -145,10 +145,11 @@ export function ReceiptSection({ setInventory }: Props) {
                   {parsed.length} 点
                 </span>
               </div>
-              <ul>
+              <ul className="stagger-children">
                 {parsed.map((p, idx) => (
                   <li
                     key={p.ingredient}
+                    style={{ '--i': idx } as React.CSSProperties}
                     className={`flex items-baseline justify-between gap-4 px-5 py-2.5 ${
                       idx > 0 ? 'border-t border-[var(--color-line-soft)]' : ''
                     }`}
@@ -171,7 +172,7 @@ export function ReceiptSection({ setInventory }: Props) {
               <div className="flex justify-end border-t border-[var(--color-line-soft)] px-5 py-3">
                 <button
                   onClick={addAllToInventory}
-                  className="rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
+                  className="press rounded-md bg-[var(--color-ink)] px-3 py-1.5 text-xs font-medium text-white transition-opacity duration-150 hover:opacity-90"
                 >
                   すべて在庫に追加
                 </button>
