@@ -32,6 +32,7 @@ resource "google_project_iam_member" "kondate_dev_roles" {
 # ローカル開発者が kondate-dev SA を impersonate できるようにする
 # (個人 Gmail ADC で直接 Vertex AI を呼ぶ運用なら不要だが、
 #  「本番と同じ権限でテストしたい」シナリオへの備え)
+# TODO: Cloud Run デプロイ時に runtime SA として指定する (google_cloud_run_v2_service.template.service_account)
 resource "google_service_account_iam_member" "kondate_dev_impersonation" {
   service_account_id = google_service_account.kondate_dev.name
   role               = "roles/iam.serviceAccountTokenCreator"
