@@ -27,6 +27,9 @@ locals {
     # 観測
     "logging.googleapis.com",
     "monitoring.googleapis.com",
+
+    # 予算管理
+    "billingbudgets.googleapis.com", # 月次予算アラート (infra/live/billing.tf)
   ]
 }
 

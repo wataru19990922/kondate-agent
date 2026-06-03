@@ -16,6 +16,7 @@ env:
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "false"
   TF_VAR_personal_account_email: ${{ vars.PERSONAL_ACCOUNT_EMAIL }}
+  TF_VAR_billing_account_id: ${{ vars.BILLING_ACCOUNT_ID }}
 
 jobs:
   plan:

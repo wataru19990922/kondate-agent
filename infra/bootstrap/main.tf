@@ -139,3 +139,11 @@ resource "google_service_account_iam_member" "wif_terraform_binding" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.github_repo}"
 }
+
+# 予算 (google_billing_budget) を管理するため、billing account 上で billing.user ロールを付与
+# (プロジェクト IAM ロールでは billing account のリソースを扱えないため、別途必要)
+resource "google_billing_account_iam_member" "terraform_billing_user" {
+  billing_account_id = var.billing_account_id
+  role               = "roles/billing.user"
+  member             = "serviceAccount:${google_service_account.terraform.email}"
+}
