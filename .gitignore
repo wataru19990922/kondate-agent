@@ -41,8 +41,17 @@ firebase-debug.log
 .terraform/
 *.tfstate
 *.tfstate.backup
+*.tfvars.local
+crash.log
+
+# tfvars はデフォルトで除外 (シークレットが入る慣行) — 安全な共有値は明示的に許可する
 *.tfvars
 !example.tfvars
+!infra/live/terraform.tfvars
+!infra/bootstrap/example.tfvars
+
+# bootstrap は手元 state なので state ファイルが残るが、これは絶対にコミットしない
+infra/bootstrap/terraform.tfstate*
 
 # IDE / OS
 .vscode/

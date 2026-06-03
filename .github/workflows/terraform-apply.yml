@@ -1,0 +1,48 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "infra/live/**"
+      - ".github/workflows/terraform-*.yml"
+  workflow_dispatch: # 手動 apply も可能にする
+
+permissions:
+  contents: read
+  id-token: write # WIF (OIDC トークン取得) に必要
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+  TF_VAR_personal_account_email: ${{ vars.PERSONAL_ACCOUNT_EMAIL }}
+
+concurrency:
+  group: terraform-apply-${{ github.ref }}
+  cancel-in-progress: false # 進行中の apply を中断しない
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    environment: production # 環境保護ルール (任意レビュー) を設定可能
+    defaults:
+      run:
+        working-directory: infra/live
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to GCP (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_TERRAFORM_SERVICE_ACCOUNT }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.2
+
+      - name: Terraform init
+        run: terraform init -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}"
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve
