@@ -140,10 +140,12 @@ resource "google_service_account_iam_member" "wif_terraform_binding" {
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.github_repo}"
 }
 
-# 予算 (google_billing_budget) を管理するため、billing account 上で billing.user ロールを付与
+# 予算 (google_billing_budget) を管理するため、billing account 上で costsManager ロールを付与
 # (プロジェクト IAM ロールでは billing account のリソースを扱えないため、別途必要)
-resource "google_billing_account_iam_member" "terraform_billing_user" {
+# roles/billing.user は budgets.create 権限を含まないので注意。
+# roles/billing.costsManager は budgets の CRUD と費用データ閲覧を含む最小権限ロール。
+resource "google_billing_account_iam_member" "terraform_billing_costs_manager" {
   billing_account_id = var.billing_account_id
-  role               = "roles/billing.user"
+  role               = "roles/billing.costsManager"
   member             = "serviceAccount:${google_service_account.terraform.email}"
 }
