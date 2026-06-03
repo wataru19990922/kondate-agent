@@ -9,11 +9,14 @@
  * 暴走時の自動対応が必要になったら Pub/Sub + Cloud Functions で API 無効化等を
  * 追加する。
  *
- * thresholds:
- *   50%  ($15) : 早期警告 — まだ余裕、ただし傾向を確認
- *   90%  ($27) : 上限間近 — 利用パターン要見直し
- *   100% ($30) : 上限到達 — 何かが想定外に動いている可能性
- *   150% ($45) : 暴走検知 — 即時調査
+ * 通貨: 請求アカウントが JPY 建てなので予算も JPY で指定する
+ * (currency_code を省略すると billing account の通貨を自動採用する仕様)。
+ *
+ * thresholds (月 ¥4500, $30 相当):
+ *   50%  (¥2,250) : 早期警告 — まだ余裕、ただし傾向を確認
+ *   90%  (¥4,050) : 上限間近 — 利用パターン要見直し
+ *   100% (¥4,500) : 上限到達 — 何かが想定外に動いている可能性
+ *   150% (¥6,750) : 暴走検知 — 即時調査
  */
 
 resource "google_billing_budget" "monthly" {
@@ -26,8 +29,8 @@ resource "google_billing_budget" "monthly" {
 
   amount {
     specified_amount {
-      currency_code = "USD"
-      units         = "30"
+      # currency_code は省略 (billing account の通貨 = JPY を採用)
+      units = "4500"
     }
   }
 
