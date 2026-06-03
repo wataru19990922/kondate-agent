@@ -29,6 +29,9 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
+# ADK runtime artifacts (session.db / artifacts/ など、adk run で自動生成)
+.adk/
+
 # uv
 uv.lock
 
